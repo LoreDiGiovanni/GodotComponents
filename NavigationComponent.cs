@@ -30,7 +30,7 @@ public partial class NavigationComponent : Node2D{
 		timer.WaitTime = 0.1f;
 		navigation_agent.PathDesiredDistance = 4;
 		navigation_agent.TargetDesiredDistance = 4;
-        //navigation_agent.PathPostprocessing = NavigationAgent2D.;
+		//navigation_agent.PathPostprocessing = NavigationAgent2D.;
 		proximity_trigger_component.Triggered += OnTriggered;
 		timer.Timeout += OnTimerTimeout;
 	}
@@ -38,7 +38,6 @@ public partial class NavigationComponent : Node2D{
 	public override void _PhysicsProcess(double delta){
 		if (body != null) {
 			direction = Bat.GlobalPosition.DirectionTo(navigation_agent.GetNextPathPosition());
-			GD.Print(direction);
 			velocity_component.MoveOnGroundByDirection(direction);
 			velocity_component.Move();
 		}
@@ -47,15 +46,11 @@ public partial class NavigationComponent : Node2D{
 
 	private void OnTriggered(Node2D body){
 		this.body = body;
-		GD.Print(body.Name);
 		navigation_agent.TargetPosition = body.GlobalPosition; 
-
-
 	}
 
 	private void OnTimerTimeout(){
 		navigation_agent.TargetPosition = body.GlobalPosition; 
-		GD.Print("Timer timeout");
 	}
 
 
