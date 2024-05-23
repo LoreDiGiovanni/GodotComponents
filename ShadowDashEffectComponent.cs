@@ -22,6 +22,9 @@ public partial class ShadowDashEffectComponent : Node
     [Export]
     public Node2D owner;
 
+    [Export]
+    public Material shadow_material;
+
     private Queue<Sprite2D> shadow_queue = new Queue<Sprite2D>();
     private Sprite2D shadow;
 
@@ -36,6 +39,8 @@ public partial class ShadowDashEffectComponent : Node
     private void OnShadowDashTimerTimeout(){
         shadow = (Sprite2D)sprite.Duplicate();
         shadow.TextureFilter = sprite.TextureFilter;
+        shadow.TextureRepeat= sprite.TextureRepeat;
+        shadow.Material = shadow_material;
         shadow.GlobalPosition = owner.Position;
         GetTree().CurrentScene.AddChild(shadow);
 

@@ -2,7 +2,6 @@ using Godot;
 using System;
 
 public partial class NavigationComponent : Node2D{
-	
 
 	[ExportGroup("Navigation settings")]
 
@@ -52,6 +51,5 @@ public partial class NavigationComponent : Node2D{
 	private void OnTimerTimeout(){
 		navigation_agent.TargetPosition = body.GlobalPosition; 
 	}
-
 
 }

@@ -6,12 +6,12 @@ public partial class HitBoxComponent : Area2D
 	public CollisionShape2D box;
 
     
-	[ExportGroup("HitBoxsettings")]
+	[ExportGroup("HitBox settings")]
 	[Export]
-	public int DamageAmount = 10;
+	public float DamageAmount = 0f;
 
     [Export]
-    public int Knockback = 0;
+    public float Knockback = 0;
 
 	public override void _Ready(){
 		AreaEntered += OnAreaEntered;
@@ -20,7 +20,9 @@ public partial class HitBoxComponent : Area2D
 	private void OnAreaEntered(Area2D area){
         var hurt_box = (HurtBoxComponent)area;
         if (hurt_box!= null){
-			hurt_box.Damage(DamageAmount);
+            Vector2 contactPoint = (GlobalPosition + area.GlobalPosition) / 2;
+            Vector2 dir= (GlobalPosition- contactPoint).Normalized();
+			hurt_box.Damage(DamageAmount, Knockback, -dir);
 		}
 	}
 }

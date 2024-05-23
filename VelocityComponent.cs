@@ -24,26 +24,47 @@ public partial class VelocityComponent : Node
 	public float dash_friction = 300.0f;
     [Export]
     public Timer dash_timer;
+    public Vector2 dash_direction = Vector2.Zero; 
+    public bool onDash = false;
+
+    [ExportGroup("Kcnockback settings")]
+    [Export]
+    public float kcnockback_time = 0.1f;
+    [Export]
+	public float kcnockback_acceleration = 700.0f;
+	[Export]
+	public float kcnockback_friction = 300.0f;
+    [Export]
+    public Timer knockback_timer;
+    public Vector2 knockback_direction = Vector2.Zero; 
+    public bool onKnockback= false;
 
 	public Vector2 VelocityOverride;
     public float current_speed = 0.0f;
     public float current_acceleration = 0.0f;
     public float current_friction = 0.0f;
-    public Vector2 dash_direction = Vector2.Zero; 
-    public bool onDash = false;
 
     public override void _Ready(){
         current_speed = Speed;
         current_acceleration = Acceleration;
         current_friction = Friction;
+        //Dash
         dash_timer.WaitTime = dash_time;
+        dash_timer.OneShot = true;
         dash_timer.Timeout += OnDashTimerTimeout;
+        //Knockback
+        knockback_timer.WaitTime = kcnockback_time;
+        knockback_timer.OneShot = true;
+        knockback_timer.Timeout += OnKnockbackTimerTimeout;
+
 
     }
 
 	public void MoveOnGroundByDirection(Vector2 direction){
         if (onDash){
             direction = dash_direction;
+        }else if(onKnockback){
+            direction = knockback_direction;
         }
         if (direction.X != 0.0f || direction.Y != 0.0f){
 			VelocityOverride.X = ApplayAcceleration(VelocityOverride.X,direction.X);
@@ -68,14 +89,12 @@ public partial class VelocityComponent : Node
 	}
 
     public void Dash(Vector2 dir){
-		GD.Print("Dash");
         dash_timer.Start();
         onDash = true;
         dash_direction = dir;
         current_speed = dash_speed;
         current_acceleration = dash_acceleration;
         current_friction = dash_friction;
-
     }
 
     public void OnDashTimerTimeout(){
@@ -84,7 +103,23 @@ public partial class VelocityComponent : Node
         current_acceleration = Acceleration;
         current_friction = Friction;
         dash_timer.Stop();
-		GD.Print("Dash end");
+    }
+    public void Knockback(Vector2 dir,float force){
+        GD.Print("Knockback start");
+        onKnockback = true;
+        onDash = false;
+        knockback_timer.Start();
+        knockback_direction = dir;
+        current_speed = force;
+        current_acceleration = kcnockback_acceleration;
+        current_friction = kcnockback_friction;
+    }
+    public void OnKnockbackTimerTimeout(){
+        onKnockback = false;
+        current_speed = Speed;
+        current_acceleration = Acceleration;
+        current_friction = Friction;
+        GD.Print("Knockback end");
     }
 }
 
